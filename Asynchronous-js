@@ -1,0 +1,10 @@
+//* Asynchronous JS
+function async_js($tag){
+$scripts_to_async = array('script-1.js', 'script-2.js', 'script-3.js', 'script-4.js', 'script-5.js');
+foreach($scripts_to_async as $async_script){
+	if(true == strpos($tag, $async_script ) )
+	return str_replace( ' src', ' async="async" src', $tag );	
+}
+return $tag;
+}
+add_filter( 'script_loader_tag', 'async_js', 10 );
