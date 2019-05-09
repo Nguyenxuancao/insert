@@ -42,3 +42,18 @@ function remove_admin_menu_links(){
 		
     }
 }
+
+// get all user emails
+$args = array('orderby' => 'display_name');
+$wp_user_query = new WP_User_Query($args);
+$authors = $wp_user_query->get_results();
+if (!empty($authors)) {
+	echo '<ul>';
+	foreach ($authors as $author) {
+		$author_info = get_userdata($author->ID);
+		echo '<li>' . $author_info->user_email . '</li>';
+	}
+	echo '</ul>';
+} else {
+	echo 'No results';
+}
