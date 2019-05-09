@@ -1,0 +1,44 @@
+// https://codex.wordpress.org/Function_Reference/add_role
+// Create a new "Basic Contributor" role
+$result = add_role(
+    'basic_contributor',
+    __( 'Basic Contributor' ),
+    array(
+        'read'         => true,  // true allows this capability
+        'edit_posts'   => true,
+        'delete_posts' => false, // Use false to explicitly deny
+    )
+);
+if ( null !== $result ) {
+    echo 'Yay! New role created!';
+}
+else {
+    echo 'Oh... the basic_contributor role already exists.';
+}
+
+// Create a new role when a plugin is activated. See register_activation_hook.
+ function add_roles_on_plugin_activation() {
+       add_role( 'custom_role', 'Custom Subscriber', array( 'read' => true, 'edit_posts' => true ) );
+ }
+ register_activation_hook( __FILE__, 'add_roles_on_plugin_activation' );
+   
+
+// Remove Different Admin Menu Links For A Specific User Profile
+add_action('admin_menu', 'remove_admin_menu_links');
+function remove_admin_menu_links(){
+    $user = wp_get_current_user();
+    if( $user && isset($user->user_email) && 'user@email.com' == $user->user_email ) {
+        remove_menu_page('tools.php');
+        remove_menu_page('themes.php');
+        remove_menu_page('options-general.php');
+        remove_menu_page('plugins.php');
+        remove_menu_page('users.php');
+        remove_menu_page('edit-comments.php');
+        remove_menu_page('page.php');
+        remove_menu_page('upload.php');
+        remove_menu_page( 'edit.php?post_type=page' ); 
+        remove_menu_page( 'edit.php?post_type=videos' );
+        remove_menu_page( 'edit.php' );
+		
+    }
+}
