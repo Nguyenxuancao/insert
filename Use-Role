@@ -104,6 +104,29 @@ function remove_admin_menu_links(){
 		
     }
 }
+// Remove Different Admin Menu for usename
+add_action('admin_menu', 'remove_admin_menu_links');
+function remove_admin_menu_links(){
+    global $menu;
+    global $current_user;
+    //get_currentuserinfo();
+ 
+    if($current_user->user_login == 'caonguyen')
+    {
+        remove_menu_page('tools.php');
+        remove_menu_page('themes.php');
+        remove_menu_page('options-general.php');
+        remove_menu_page('plugins.php');
+        remove_menu_page('users.php');
+        remove_menu_page('edit-comments.php');
+        remove_menu_page('page.php');
+        remove_menu_page('upload.php');
+        remove_menu_page( 'edit.php?post_type=page' ); 
+        remove_menu_page( 'edit.php?post_type=videos' );
+        remove_menu_page( 'edit.php' );
+		
+    }
+}
 
 // https://codex.wordpress.org/Function_Reference/get_users
 // get all user emails
