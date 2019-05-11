@@ -77,3 +77,5 @@ function add_theme_caps() {
     $admins->add_cap( 'read_private_galleries' ); 
     $admins->add_cap( 'delete_gallery' ); 
 }
+
+add_action('after_switch_theme', 'mytheme_setup_options');
