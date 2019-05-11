@@ -199,6 +199,8 @@ $result = add_role(
 			'level_2' => true,					
 			'level_1' => true,					
 			'level_0' => true,
+			'manage_woocommerce' => true,
+			'view_woocommerce_reports' => true,
 			// Post type.
 			'edit_product' => true,
 			'read_product' => true,
