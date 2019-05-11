@@ -1,0 +1,64 @@
+add_action( 'init', 'register_cpt_gallery' );
+
+function register_cpt_gallery() {
+$labels = array( 
+    'name' => _x( 'Galleries', 'gallery' ),
+    'singular_name' => _x( 'Gallery', 'gallery' ),
+    'add_new' => _x( 'Add New', 'gallery' ),
+    'add_new_item' => _x( 'Add New Gallery', 'gallery' ),
+    'edit_item' => _x( 'Edit Gallery', 'gallery' ),
+    'new_item' => _x( 'New Gallery', 'gallery' ),
+    'view_item' => _x( 'View Gallery', 'gallery' ),
+    'search_items' => _x( 'Search Galleries', 'gallery' ),
+    'not_found' => _x( 'No galleries found', 'gallery' ),
+    'not_found_in_trash' => _x( 'No galleries found in Trash', 'gallery' ),
+    'parent_item_colon' => _x( 'Parent Gallery:', 'gallery' ),
+    'menu_name' => _x( 'Galleries', 'gallery' ),
+);
+
+$args = array( 
+    'labels' => $labels,
+    'hierarchical' => true,
+    'description' => 'Image galleries for teachers classes',
+    'supports' => array( 'title', 'editor', 'author'),
+    'public' => true,
+    'show_ui' => true,
+    'show_in_menu' => true,
+    'menu_icon' => get_bloginfo('template_url') . '/images/imagegallery.png',
+    'show_in_nav_menus' => true,
+    'publicly_queryable' => true,
+    'exclude_from_search' => false,
+    'has_archive' => true,
+    'query_var' => true,
+    'can_export' => true,
+    'rewrite' => true,
+    'capabilities' => array(
+        'edit_post' => 'edit_gallery',
+        'edit_posts' => 'edit_galleries',
+        'edit_others_posts' => 'edit_other_galleries',
+        'publish_posts' => 'publish_galleries',
+        'read_post' => 'read_gallery',
+        'read_private_posts' => 'read_private_galleries',
+        'delete_post' => 'delete_gallery'
+    ),
+    // as pointed out by iEmanuele, adding map_meta_cap will map the meta correctly 
+    'map_meta_cap' => true
+);
+
+register_post_type( 'gallery', $args );
+}
+
+//Add capabilities to the role
+function add_theme_caps() {
+    // gets the administrator role
+    $admins = get_role( 'administrator' );
+
+    $admins->add_cap( 'edit_gallery' ); 
+    $admins->add_cap( 'edit_galleries' ); 
+    $admins->add_cap( 'edit_other_galleries' ); 
+    $admins->add_cap( 'publish_galleries' ); 
+    $admins->add_cap( 'read_gallery' ); 
+    $admins->add_cap( 'read_private_galleries' ); 
+    $admins->add_cap( 'delete_gallery' ); 
+}
+add_action( 'admin_init', 'add_theme_caps');
