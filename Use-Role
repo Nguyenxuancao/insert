@@ -111,7 +111,7 @@ function remove_admin_menu_links(){
     global $current_user;
     //get_currentuserinfo();
  
-    if($current_user->user_login == 'caonguyen')
+    if($current_user->user_login == 'usename')
     {
         remove_menu_page('tools.php');
         remove_menu_page('themes.php');
