@@ -1,0 +1,64 @@
+add_shortcode( 'spftf_frontend_post', 'spftf_frontend_post' );
+function spftf_frontend_post() {
+	spftf_save_post_if_submitted();
+    ?>
+	<div id="postbox">
+		<form id="new_post" name="new_post" method="post">
+
+		<p><label for="title">Title</label><br />
+			<input type="text" id="title" value="" tabindex="1" size="20" name="title" />
+		</p>
+
+		<p>
+			<label for="content">Post Content</label><br />
+			<textarea id="content" tabindex="3" name="content" cols="50" rows="6"></textarea>
+		</p>
+
+		<p><?php wp_dropdown_categories( 'show_option_none=Category&tab_index=4&taxonomy=category' ); ?></p>
+
+		<p><label for="post_tags">Tags</label>
+
+		<input type="text" value="" tabindex="5" size="16" name="post_tags" id="post_tags" /></p>
+
+		<?php wp_nonce_field( 'wps-frontend-post' ); ?>
+
+		<p align="right"><input type="submit" value="Publish" tabindex="6" id="submit" name="submit" /></p>
+		
+		</form>
+	</div>
+    <?php
+}
+function spftf_save_post_if_submitted() {
+    // Stop running function if form wasn't submitted
+    if ( !isset($_POST['title']) ) {
+        return;
+    }
+
+    // Check that the nonce was set and valid
+    if( !wp_verify_nonce($_POST['_wpnonce'], 'wps-frontend-post') ) {
+        echo 'Did not save because your form seemed to be invalid. Sorry';
+        return;
+    }
+
+    // Do some minor form validation to make sure there is content
+    if (strlen($_POST['title']) < 3) {
+        echo 'Please enter a title. Titles must be at least three characters long.';
+        return;
+    }
+    if (strlen($_POST['content']) < 100) {
+        echo 'Please enter content more than 100 characters in length';
+        return;
+    }
+
+    // Add the content of the form to $post as an array
+    $post = array(
+        'post_title'    => $_POST['title'],
+        'post_content'  => $_POST['content'],
+        'post_category' => $_POST['cat'], 
+        'tags_input'    => $_POST['post_tags'],
+        'post_status'   => 'draft',   // Could be: publish
+        'post_type' 	=> 'post' // Could be: `page` or your CPT
+    );
+    wp_insert_post($post);
+    echo 'Saved your post successfully! :)';
+}
