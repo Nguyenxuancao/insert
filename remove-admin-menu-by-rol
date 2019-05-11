@@ -1,0 +1,55 @@
+// Filter admin side navigation menues
+add_action('admin_init',  'filter_admin_menues');
+function filter_admin_menues() {
+		
+	// If administrator then do nothing
+	if (current_user_can('administrator')) return;
+	
+	// Remove main menus
+	$main_menus_keep = array(
+		
+		// Dashboard
+		'index.php',
+		
+		// Edit
+		'edit.php',
+		
+		// Media
+		'upload.php'
+	);
+
+	// Remove sub menus
+	$sub_menus_keep = array(
+		
+		// Dashboard
+		'index.php' => ['index.php'],
+		
+		// Edit
+		'edit.php' => ['edit.php', 'post-new.php'],
+		
+		// Media
+		'upload.php' => ['upload.php', 'media-new.php'],
+		
+		
+	);
+
+
+	if (isset($GLOBALS['menu']) && is_array($GLOBALS['menu'])) {
+		foreach ($GLOBALS['menu'] as $k => $main_menu_array) {				
+			// Remove main menu
+			if (!in_array($main_menu_array[2], $main_menus_keep)) {
+				remove_menu_page($main_menu_array[2]);
+			} else {
+				
+				// Remove submenu
+				foreach ($GLOBALS['submenu'][$main_menu_array[2]] as $k => $sub_menu_array) {
+					
+					if (!in_array($sub_menu_array[2], $sub_menus_keep[$main_menu_array[2]])) {
+						
+						remove_submenu_page($main_menu_array[2], $sub_menu_array[2]);							
+					}
+				}
+			}
+		}
+	}
+}
