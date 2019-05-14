@@ -107,8 +107,7 @@ function remove_admin_menu_links(){
 // Remove Different Admin Menu for usename
 add_action('admin_menu', 'remove_admin_menu_links');
 function remove_admin_menu_links(){
-    global $menu;
-    global $current_user;
+   global $menu, $current_user;
     //get_currentuserinfo();
  
     if($current_user->user_login == 'usename')
@@ -128,8 +127,7 @@ function remove_admin_menu_links(){
     }
 }
 function remove_menus() {
-	global $menu;
-    global $current_user;
+	global $menu, $current_user;
     //get_currentuserinfo();
 	$usenames = array(
         'namnguyen',
