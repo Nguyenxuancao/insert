@@ -127,6 +127,40 @@ function remove_admin_menu_links(){
 		
     }
 }
+function remove_menus() {
+	global $menu;
+    global $current_user;
+    //get_currentuserinfo();
+	$usenames = array(
+        'namnguyen',
+		'vendor'
+    );
+
+    foreach ( $usenames as $usename ) {
+		if($current_user->user_login == $usename )
+		{
+			
+			remove_menu_page('tools.php');
+			remove_menu_page('themes.php');
+			remove_menu_page('options-general.php');
+			remove_menu_page('plugins.php');
+			remove_menu_page('users.php');
+			remove_menu_page('edit-comments.php');
+			remove_menu_page('page.php');
+			remove_menu_page('upload.php');
+			remove_menu_page( 'edit.php?post_type=page' ); 
+			remove_menu_page( 'edit.php?post_type=videos' );
+			remove_menu_page( 'edit.php' );
+			remove_menu_page( 'wp-white-label' );
+			remove_menu_page( 'admin.php?page=wp-white-label' );
+			remove_menu_page( 'admin.php?page=elementor' );
+			remove_menu_page( 'edit.php?post_type=elementor_library' );
+			remove_menu_page( 'elementor' );
+			
+		}
+	}
+}
+add_action( 'admin_init', 'remove_menus' );
 
 // https://codex.wordpress.org/Function_Reference/get_users
 // get all user emails
