@@ -56,7 +56,7 @@ function longviet_user_register( $user_id ) {
 		update_user_meta( $user_id, 'year_of_birth', intval( $_POST['year_of_birth'] ) );
 	}
 }
-/////////////////////////////////////////////////
+///////////////////////////////////////////////// add a custom user field
 // Back end registration
 add_action( 'user_new_form', 'longviet_admin_registration_form' );
 function longviet_admin_registration_form( $operation ) {
