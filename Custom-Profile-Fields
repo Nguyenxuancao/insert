@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: 	  Custom Registration Fields
+ * Plugin Name: 	  Custom Registration Form Fields
  * Plugin URI: 	      https://longvietweb.com/plugins/
  * Description:       Custom Registration Fields
  * Tags: 			  Custom Registration Fields
@@ -12,7 +12,7 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-// Front end registration
+// Front end registration 
 add_action( 'register_form', 'longviet_registration_form' );
 function longviet_registration_form() {
 
@@ -34,7 +34,7 @@ function longviet_registration_form() {
 	</p>
 	<?php
 }
-
+// Validating the field
 add_filter( 'registration_errors', 'longviet_registration_errors', 10, 3 );
 function longviet_registration_errors( $errors, $sanitized_user_login, $user_email ) {
 
@@ -48,15 +48,15 @@ function longviet_registration_errors( $errors, $sanitized_user_login, $user_ema
 
 	return $errors;
 }
-
-//add_action( 'edit_user_created_user', 'longviet_user_register' );
+// Sanitizing and saving the field
+add_action( 'edit_user_created_user', 'longviet_user_register' );
 add_action( 'user_register', 'longviet_user_register' );
 function longviet_user_register( $user_id ) {
 	if ( ! empty( $_POST['year_of_birth'] ) ) {
 		update_user_meta( $user_id, 'year_of_birth', intval( $_POST['year_of_birth'] ) );
 	}
 }
-
+/////////////////////////////////////////////////
 // Back end registration
 add_action( 'user_new_form', 'longviet_admin_registration_form' );
 function longviet_admin_registration_form( $operation ) {
