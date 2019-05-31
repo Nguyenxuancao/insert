@@ -25,3 +25,46 @@ function galleries_single_shortcode($atts, $content = null) {
     return $galleries_single_shortcode_output;
 }
 add_shortcode('galleries_single', 'galleries_single_shortcode');
+
+//
+// In your php file
+add_action( 'wp_ajax_my_delete_transient_action', 'my_delete_transient_action' );
+add_action( 'wp_ajax_nopriv_my_delete_transient_action', 'my_delete_transient_action' ); // for users that are not logged in
+
+function my_delete_transient_action() {
+
+    // Check nonce and other stuff here as needed
+    // If and when everything is ok, then use the delete_transient function
+    $deleted = delete_transient('my_user_specific_transient'); // returns bool
+
+    // Option 1 to send custom text response back to front-end
+    if ($deleted) {
+        echo 'Transient deleted';
+    } else {
+        echo 'Transient deletion failed';
+    } 
+    die();
+
+    // Option 2
+    if ($deleted) {
+        wp_send_json_success('Transient deleted');
+    } else {
+        wp_send_json_error('Transient deletion failed');
+    }
+
+}
+
+// In your js file
+jQuery(document).ready(function($) {
+    $('.my-reset-button').on('click',function(event){
+        event.preventDefault();
+        var data = {
+            'action': 'my_delete_transient_action',
+        };
+
+        // You can use wp_localize_script in php file to have admin_url( 'admin-ajax.php' ) available in front-end
+        jQuery.post(ajax_object.ajax_url, data, function(response) {
+            alert('Got this from the server: ' + response); // do something with the response
+        });
+    });
+});
