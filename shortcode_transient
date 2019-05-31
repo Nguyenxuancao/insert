@@ -1,0 +1,27 @@
+function galleries_single_shortcode($atts, $content = null) {
+    extract(shortcode_atts(array(
+            "id"     => '',
+            "columns" => 'four'
+    ), $atts));
+
+    global $galleries_options;
+
+    $galleries_single_shortcode_output = get_transient('galleries_single_shortcode_'.$id.$columns);
+    if ($galleries_single_shortcode_output === false) {
+
+        ob_start();
+
+        // OUTPUT HERE
+
+        $galleries_single_shortcode_output = ob_get_contents();
+
+        ob_end_clean();
+
+        set_transient('galleries_single_shortcode_'.$id.$columns, $galleries_single_shortcode_output, 60 * 60 * 24);
+
+    }
+
+
+    return $galleries_single_shortcode_output;
+}
+add_shortcode('galleries_single', 'galleries_single_shortcode');
