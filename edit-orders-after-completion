@@ -4,7 +4,9 @@
 add_filter( 'woocommerce_valid_order_statuses_for_order_again', 'woocommerce_order_again_statuses' );
   
 function woocommerce_order_again_statuses( $statuses ) {
-    $statuses[] = 'processing';
+	if ( $statuses ) {
+		$statuses = array( 'processing', 'on-hold');
+	}
     return $statuses;
 }
 
@@ -14,6 +16,12 @@ add_filter( 'woocommerce_my_account_my_orders_actions', 'woocommerce_add_edit_or
   
 function woocommerce_add_edit_order_my_account_orders_actions( $actions, $order ) {
     if ( $order->has_status( 'processing' ) ) {
+        $actions['edit-order'] = array(
+            'url'  => wp_nonce_url( add_query_arg( array( 'order_again' => $order->get_id(), 'edit_order' => $order->get_id() ) ), 'woocommerce-order_again' ),
+            'name' => __( 'Edit Order', 'woocommerce' )
+        );
+    }
+	if ( $order->has_status( 'on-hold' ) ) {
         $actions['edit-order'] = array(
             'url'  => wp_nonce_url( add_query_arg( array( 'order_again' => $order->get_id(), 'edit_order' => $order->get_id() ) ), 'woocommerce-order_again' ),
             'name' => __( 'Edit Order', 'woocommerce' )
