@@ -1,0 +1,31 @@
+if( !function_exists('shortcode_my_menu') ) {
+    function shortcode_my_menu( $item_output, $item ) {
+        if ( !empty($item->description)) {
+             $output = do_shortcode($item->description);
+             if ( $output != $item->description )
+                  $item_output = $output;  
+            }
+        return $item_output;    
+    }
+    add_filter("walker_nav_menu_start_el", "shortcode_my_menu" , 10 , 2);
+}
+
+if( !function_exists('eval_to_allow_php_in_text_widget') ) {
+function eval_to_allow_php_in_text_widget($text) {
+    ob_start();
+    eval('?>'
+    .$text);
+    $text = ob_get_contents();
+    ob_end_clean();
+    return $text;
+}
+add_filter('widget_text', 'do_shortcode');
+add_filter( 'widget_title', 'do_shortcode' );
+add_filter('widget_text', 'eval_to_allow_php_in_text_widget');
+add_filter('widget_title', 'eval_to_allow_php_in_text_widget');
+}
+add_filter('widget_text','do_shortcode');
+add_filter( 'widget_title', 'do_shortcode' );
+add_filter( 'term_description', 'do_shortcode' );
+add_filter( 'category_description', 'do_shortcode' );
+add_filter( 'post_tag_description', 'do_shortcode' );
