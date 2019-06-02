@@ -29,3 +29,58 @@ add_filter( 'widget_title', 'do_shortcode' );
 add_filter( 'term_description', 'do_shortcode' );
 add_filter( 'category_description', 'do_shortcode' );
 add_filter( 'post_tag_description', 'do_shortcode' );
+
+/**
+ * Filters all menu item URLs for a #placeholder#.
+ *
+ * @param WP_Post[] $menu_items All of the nave menu items, sorted for display.
+ *
+ * @return WP_Post[] The menu items with any placeholders properly filled in.
+ */
+function my_dynamic_menu_items( $menu_items ) {
+
+    // A list of placeholders to replace.
+    // You can add more placeholders to the list as needed.
+    $placeholders = array(
+        '#profile_link#' => array(
+            'shortcode' => 'my_shortcode',
+            'atts' => array(), // Shortcode attributes.
+            'content' => '', // Content for the shortcode.
+        ),
+    );
+
+    foreach ( $menu_items as $menu_item ) {
+
+        if ( isset( $placeholders[ $menu_item->url ] ) ) {
+
+            global $shortcode_tags;
+
+            $placeholder = $placeholders[ $menu_item->url ];
+
+            if ( isset( $shortcode_tags[ $placeholder['shortcode'] ] ) ) {
+
+                $menu_item->url = call_user_func( 
+                    $shortcode_tags[ $placeholder['shortcode'] ]
+                    , $placeholder['atts']
+                    , $placeholder['content']
+                    , $placeholder['shortcode']
+                );
+            }
+        }
+    }
+
+    return $menu_items;
+}
+add_filter( 'wp_nav_menu_objects', 'my_dynamic_menu_items' );
+///////////////////////////////////
+You just need to set 'shortcode' in the $placeholders array, and optionally 'atts' and 'content'.
+
+For example, if your shortcode is like this:
+
+[example id="5" other="test"]Shortcode content[/example]
+
+'#placeholder#' => array(
+    'shortcode' => 'example';
+    'atts' => array( 'id' => '5', 'other' => 'test' );
+    'content' => 'Shortcode content';
+),
