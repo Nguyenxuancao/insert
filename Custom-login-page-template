@@ -1,0 +1,78 @@
+function favorite_login_page() {
+	global $user_ID, $user_identity;
+	$redirect = site_url();
+	?>
+	<div class="login-area">
+        <div class="note">
+			<h1><?php _e( 'Login', 'favorite-pro' ) ?></h1></div>
+        <div class="form"><?php
+			if ( ! is_user_logged_in() ) { // Display WordPress login form:
+				$args = array(
+					'redirect' => admin_url(), 
+					'form_id' => 'loginform-custom',
+					'label_username' => __( 'Username', 'favorite-pro' ),
+					'label_password' => __( 'Password', 'favorite-pro' ),
+					'label_remember' => __( 'Remember Me', 'favorite-pro' ),
+					'label_log_in' => __( 'Log In', 'favorite-pro' ),
+					'remember' => true
+				);
+			wp_login_form( $args );
+			?><ul class="login-links">
+				<?php echo wp_register() ?>
+				<li><a href="<?php echo wp_lostpassword_url($redirect) ?>"><?php _e( 'Lost your password ?', 'favorite-pro' ) ?></a></li>
+			</ul><?php
+			} else { // If logged in:
+				?>
+				<div id="user-login">
+					<span class="author-avatar"><?php echo get_avatar( $user_ID, $size = '90'); ?></span>
+					<p class="welcome-text"><?php _e( 'Welcome', 'favorite-pro' ) ?> <strong><?php echo $user_identity ?></strong> .</p>
+					<ul>
+						<li><a href="<?php echo admin_url() ?>"><?php _e( 'Dashboard', 'favorite-pro' ) ?> </a></li>
+						<li><a href="<?php echo admin_url() ?>profile.php"><?php _e( 'Your Profile', 'favorite-pro' ) ?> </a></li>
+						<li><?php echo wp_loginout( home_url() ); ?></li>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				<?php
+			}?>
+        </div><?php
+        $login  = (isset($_GET['login']) ) ? $_GET['login'] : 0;
+		$error = __('<strong>ERROR:</strong> Wrong username or password.', 'favorite-pro');
+		$errors = __('<strong>ERROR:</strong> Username and password cannot be blank.', 'favorite-pro');
+		$errorss = __('<strong>ERROR:</strong> You have escaped.', 'favorite-pro');
+        if ( $login === "failed" ) {
+                echo '<div class="login_error">'.$error.'</div>';
+        } elseif ( $login === "empty" ) {
+                echo '<div class="login_error">'.$errors.'</div>';
+        } elseif ( $login === "false" ) {
+                echo '<div class="login_error">'.$errorss.'</div>';
+        }?>
+	</div><?php
+}
+/////////// function.php
+// Antiseptic wp-login.php
+add_action('init','redirect_login_page');
+function redirect_login_page() {
+    $login_page  = home_url( '/login/' );
+    $page_viewed = basename($_SERVER['REQUEST_URI']);  
+ 
+    if( $page_viewed == "wp-login.php" && $_SERVER['REQUEST_METHOD'] == 'GET') {
+        wp_redirect($login_page);
+        exit;
+    }
+}
+// Check login error.
+add_action( 'wp_login_failed', 'login_failed' );  
+function login_failed() {
+    $login_page  = home_url( '/login/' );
+    wp_redirect( $login_page . '?login=failed' );
+    exit;
+}
+add_filter( 'authenticate', 'verify_username_password', 1, 3);
+function verify_username_password( $user, $username, $password ) {
+    $login_page  = home_url( '/login/' );
+    if( $username == "" || $password == "" ) {
+        wp_redirect( $login_page . "?login=empty" );
+        exit;
+    }
+}
