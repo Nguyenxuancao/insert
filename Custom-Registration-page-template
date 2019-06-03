@@ -1,0 +1,46 @@
+function favorite_login_page() {
+	global $user_ID, $user_identity, $errors, $sanitized_user_login, $user_email;
+	?>
+	<div class="register-area">
+        <div class="note">
+			<h1><?php _e( 'Đăng Ký', 'favorite-pro' ) ?></h1></div>
+        <div class="form">
+			<form name="registerform" id="registerform" action="<?php echo esc_url( site_url( 'wp-login.php?action=register', 'login_post' ) ) ?>" method="post" novalidate="novalidate">
+				<p>
+					<label for="user_login"><?php _e('Username', 'favorite-pro'); ?>: </label>
+					<input type="text" name="user_login" id="user_login" class="input" value="" size="20" />
+				</p>
+				<p>
+					<label for="user_email"><?php _e('Your Email', 'favorite-pro'); ?>: </label>
+					<input type="email" name="user_email" id="user_email" class="input" value="" size="25" />
+				</p>
+				<?php do_action('register_form'); ?>
+				<p>
+					<p id="reg_passmail"><?php _e('Email xác nhận sẽ được gửi tới hộp thư của bạn.'); ?></p>
+					<input type="submit" name="user-submit" value="<?php _e('Sign up !', 'favorite-pro'); ?>" class="user-submit" tabindex="103" />
+					<input type="hidden" name="redirect_to" value="<?php echo $_SERVER['REQUEST_URI']; ?>"/>
+					<input type="hidden" name="user-cookie" value="1" />
+				</p>
+			</form>
+        </div>
+	</div><?php
+}
+
+// Redirect Registration Page
+add_action( 'login_form_register', 'redirect_register' );
+function redirect_register($link) {
+	wp_redirect( wp_registration_url() );
+	exit();
+}
+add_filter( 'register_url', 'register_url' );
+function register_url($url) {
+	return home_url( '/dang-ky/' );
+}
+// Redirect Registration Page
+add_filter( 'init', 'my_registration_page_redirect' );
+function my_registration_page_redirect() {
+	global $pagenow;
+	if ( ( strtolower($pagenow) == 'wp-login.php') && ( strtolower( $_GET['action']) == 'register' ) ) {
+		wp_redirect( home_url('/dang-ky/'));
+	}
+}
