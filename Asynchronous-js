@@ -1,4 +1,4 @@
-//* Asynchronous JS
+//* Asynchronous JS - Asynchronous - Không đồng bộ
 function async_js($tag){
 $scripts_to_async = array('script-1.js', 'script-2.js', 'script-3.js', 'script-4.js', 'script-5.js');
 foreach($scripts_to_async as $async_script){
